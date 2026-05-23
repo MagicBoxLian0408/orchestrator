@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: orchestrator-local
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  config:
+    import:
+      - file:services/orchestrator/env/local.env[.properties]
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    listener:
+      ack-mode: record
+      missing-topics-fatal: false
+    consumer:
+      group-id: orchestrator-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: "kr.magicbox.orchestrator.adapter.in.kafka.event"
+        spring.json.type.mapping: order-prepare:kr.magicbox.orchestrator.adapter.in.kafka.event.OrderPrepareEvent,order-confirmed:kr.magicbox.orchestrator.adapter.in.kafka.event.OrderConfirmedEvent,order-cancel:kr.magicbox.orchestrator.adapter.in.kafka.event.OrderCancelEvent,order-purchase-confirmed:kr.magicbox.orchestrator.adapter.in.kafka.event.OrderPurchaseConfirmedEvent,order-auto-confirmed:kr.magicbox.orchestrator.adapter.in.kafka.event.OrderAutoConfirmedEvent,delivery-completed:kr.magicbox.orchestrator.adapter.in.kafka.event.DeliveryCompletedEvent,payment-succeeded:kr.magicbox.orchestrator.adapter.in.kafka.event.PaymentSucceededEvent,payment-failed:kr.magicbox.orchestrator.adapter.in.kafka.event.PaymentFailedEvent,payment-cancel-succeeded:kr.magicbox.orchestrator.adapter.in.kafka.event.PaymentCancelSucceededEvent,stock-reserve-succeeded:kr.magicbox.orchestrator.adapter.in.kafka.event.StockReserveSucceededEvent,stock-reserve-failed:kr.magicbox.orchestrator.adapter.in.kafka.event.StockReserveFailedEvent
+    retry:
+      topic:
+        attempts: 3
+        backoff:
+          delay: 1s
+          max-delay: 3s
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+inbox:
+  max-event-age-minutes: 5
+
+server:
+  port: ${SERVER_PORT}
