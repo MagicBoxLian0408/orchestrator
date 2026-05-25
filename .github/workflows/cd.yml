@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/lian2945/magicbox-orchestrator
+  IMAGE_NAME: ghcr.io/magicboxlian0408/orchestrator
 
 jobs:
   build-and-push:
