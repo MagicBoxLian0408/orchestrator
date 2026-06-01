@@ -29,6 +29,7 @@ public class HandleOrderPrepareService implements HandleOrderPrepareUseCase {
                 .eventId(orderId)
                 .orderId(orderId)
                 .customerId(customerId)
+                .totalAmount(totalAmount)
                 .items(null)
                 .occurredAt(Instant.now())
                 .build());
