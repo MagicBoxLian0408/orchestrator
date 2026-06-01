@@ -31,8 +31,9 @@ public class IdempotentAspect {
     @Around("@annotation(kr.magicbox.orchestrator.adapter.in.kafka.annotation.Idempotent)")
     public Object around(ProceedingJoinPoint pjp) {
         ConsumerRecord<String, ?> consumerRecord = extractRecord(pjp);
+        // Debezium outbox event router가 outbox row id를 Kafka 메시지 key로 전송
+        Long eventId = Long.parseLong(consumerRecord.key());
         InboxEvent event = (InboxEvent) consumerRecord.value();
-        Long eventId = event.eventId();
         Instant occurredAt = event.occurredAt();
 
         if (isTooOld(occurredAt)) {

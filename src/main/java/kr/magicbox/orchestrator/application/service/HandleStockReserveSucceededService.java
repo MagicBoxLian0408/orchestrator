@@ -26,6 +26,7 @@ public class HandleStockReserveSucceededService implements HandleStockReserveSuc
     public void handleStockReserveSucceeded(Long orderId, Long customerId, Long totalAmount) {
         log.info("[Orchestrator] stock.reserve.succeeded 처리. orderId={}", orderId);
         orchestratorOutboxPort.save(PaymentApproveCommand.builder()
+                .eventId(orderId)
                 .orderId(orderId)
                 .customerId(customerId)
                 .amount(totalAmount)

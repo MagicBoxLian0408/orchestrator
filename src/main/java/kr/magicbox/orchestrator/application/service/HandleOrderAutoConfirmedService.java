@@ -30,11 +30,13 @@ public class HandleOrderAutoConfirmedService implements HandleOrderAutoConfirmed
         log.info("[Orchestrator] order.auto_confirmed 처리. orderId={}, orderLineId={}", orderId, orderLineId);
         Instant now = Instant.now();
         orchestratorOutboxPort.save(SettlementReadyCommand.builder()
+                .eventId(orderLineId)
                 .orderId(orderId)
                 .orderLineId(orderLineId)
                 .occurredAt(now)
                 .build());
         orchestratorOutboxPort.save(SettlementSettleCommand.builder()
+                .eventId(orderLineId)
                 .orderId(orderId)
                 .orderLineId(orderLineId)
                 .sellerId(sellerId)
