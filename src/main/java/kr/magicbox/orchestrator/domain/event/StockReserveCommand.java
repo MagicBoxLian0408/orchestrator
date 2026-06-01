@@ -8,6 +8,7 @@ import java.util.List;
 
 @Builder
 public record StockReserveCommand(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("items") List<ItemPayload> items,

@@ -7,6 +7,7 @@ import java.time.Instant;
 
 @Builder
 public record SettlementSettleCommand(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("order_line_id") Long orderLineId,
         @JsonProperty("seller_id") Long sellerId,

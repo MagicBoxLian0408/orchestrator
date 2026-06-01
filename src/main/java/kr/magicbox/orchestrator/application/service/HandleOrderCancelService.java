@@ -26,6 +26,7 @@ public class HandleOrderCancelService implements HandleOrderCancelUseCase {
     public void handleOrderCancel(Long orderId, Long customerId) {
         log.info("[Orchestrator] order.cancel 처리. orderId={}", orderId);
         orchestratorOutboxPort.save(PaymentCancelCommand.builder()
+                .eventId(orderId)
                 .orderId(orderId)
                 .customerId(customerId)
                 .occurredAt(Instant.now())

@@ -26,6 +26,7 @@ public class HandleOrderPrepareService implements HandleOrderPrepareUseCase {
     public void handleOrderPrepare(Long orderId, Long customerId, Long sellerId, Long totalAmount) {
         log.info("[Orchestrator] order.prepare 처리. orderId={}", orderId);
         orchestratorOutboxPort.save(StockReserveCommand.builder()
+                .eventId(orderId)
                 .orderId(orderId)
                 .customerId(customerId)
                 .items(null)
