@@ -11,6 +11,5 @@ public record PaymentSucceededEvent(
         @JsonProperty("payment_id") Long paymentId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
-        @JsonProperty("seller_id") Long sellerId,
         @JsonProperty("occurred_at") Instant occurredAt
 ) implements InboxEvent {}

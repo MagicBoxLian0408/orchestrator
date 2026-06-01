@@ -23,7 +23,7 @@ public class HandlePaymentSucceededService implements HandlePaymentSucceededUseC
 
     @Override
     @Transactional
-    public void handlePaymentSucceeded(Long orderId, Long customerId, Long sellerId) {
+    public void handlePaymentSucceeded(Long orderId, Long customerId) {
         log.info("[Orchestrator] payment.succeeded 처리. orderId={}", orderId);
         orchestratorOutboxPort.save(OrderPrepareConfirmedCommand.builder()
                 .eventId(orderId)

@@ -30,7 +30,7 @@ public class PaymentEventKafkaListener {
         log.info("[Inbox] payment.succeeded 이벤트 수신. eventId={}", consumerRecord.key());
         PaymentSucceededEvent event = consumerRecord.value();
         handlePaymentSucceededUseCase.handlePaymentSucceeded(
-                event.orderId(), event.customerId(), event.sellerId());
+                event.orderId(), event.customerId());
     }
 
     @Idempotent
