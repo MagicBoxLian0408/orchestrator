@@ -28,7 +28,7 @@ public class OrderEventKafkaListener {
         log.info("[Inbox] order.prepare 이벤트 수신. eventId={}", consumerRecord.key());
         OrderPrepareEvent event = consumerRecord.value();
         handleOrderPrepareUseCase.handleOrderPrepare(
-                event.orderId(), event.customerId(), event.sellerId(), event.totalAmount());
+                event.orderId(), event.customerId(), event.sellerId(), event.totalAmount(), event.items());
     }
 
     @Idempotent
