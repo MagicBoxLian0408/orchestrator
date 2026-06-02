@@ -1,9 +1,11 @@
 package kr.magicbox.orchestrator.adapter.in.kafka;
 
 import kr.magicbox.orchestrator.adapter.in.kafka.annotation.Idempotent;
+import kr.magicbox.orchestrator.adapter.in.kafka.event.PaymentCancelFailedEvent;
 import kr.magicbox.orchestrator.adapter.in.kafka.event.PaymentCancelSucceededEvent;
 import kr.magicbox.orchestrator.adapter.in.kafka.event.PaymentFailedEvent;
 import kr.magicbox.orchestrator.adapter.in.kafka.event.PaymentSucceededEvent;
+import kr.magicbox.orchestrator.application.port.in.HandlePaymentCancelFailedUseCase;
 import kr.magicbox.orchestrator.application.port.in.HandlePaymentCancelSucceededUseCase;
 import kr.magicbox.orchestrator.application.port.in.HandlePaymentFailedUseCase;
 import kr.magicbox.orchestrator.application.port.in.HandlePaymentSucceededUseCase;
@@ -22,6 +24,7 @@ public class PaymentEventKafkaListener {
     private final HandlePaymentSucceededUseCase handlePaymentSucceededUseCase;
     private final HandlePaymentFailedUseCase handlePaymentFailedUseCase;
     private final HandlePaymentCancelSucceededUseCase handlePaymentCancelSucceededUseCase;
+    private final HandlePaymentCancelFailedUseCase handlePaymentCancelFailedUseCase;
 
     @Idempotent
     @RetryableTopic
@@ -47,5 +50,14 @@ public class PaymentEventKafkaListener {
     public void handlePaymentCancelSucceeded(ConsumerRecord<String, PaymentCancelSucceededEvent> consumerRecord) {
         log.info("[Inbox] payment.cancel.succeeded 이벤트 수신. eventId={}", consumerRecord.key());
         handlePaymentCancelSucceededUseCase.handlePaymentCancelSucceeded(consumerRecord.value().orderId());
+    }
+
+    @Idempotent
+    @RetryableTopic
+    @KafkaListener(topics = "outbox.event.payment-cancel-failed", groupId = "orchestrator-service")
+    public void handlePaymentCancelFailed(ConsumerRecord<String, PaymentCancelFailedEvent> consumerRecord) {
+        log.info("[Inbox] payment.cancel.failed 이벤트 수신. eventId={}", consumerRecord.key());
+        PaymentCancelFailedEvent event = consumerRecord.value();
+        handlePaymentCancelFailedUseCase.handlePaymentCancelFailed(event.orderId(), event.reason());
     }
 }
