@@ -8,7 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * stock.reserve.failed 이벤트 처리
- * 플로우: stock.reserve.failed 수신 → Order 서비스가 자체적으로 STOCK_FAILED 처리 (Orchestrator 추가 액션 없음)
+ * Order 서비스가 stock-reserve-failed를 직접 구독하여 STOCK_FAILED 처리 — Orchestrator 추가 커맨드 없음
+ * 재고 원복 불필요 — 재고 예약 자체가 실패했으므로 롤백할 재고 없음
  */
 @Slf4j
 @Service
@@ -18,8 +19,6 @@ public class HandleStockReserveFailedService implements HandleStockReserveFailed
     @Override
     @Transactional
     public void handleStockReserveFailed(Long orderId) {
-        log.info("[Orchestrator] stock.reserve.failed 처리. orderId={}", orderId);
-        // Order 서비스가 stock.reserve.failed 이벤트를 직접 구독하여 STOCK_FAILED로 전이함
-        // Orchestrator는 추가 커맨드를 발행하지 않음
+        log.info("[Orchestrator] stock.reserve.failed 처리. orderId={} — Order 서비스가 직접 STOCK_FAILED 처리", orderId);
     }
 }

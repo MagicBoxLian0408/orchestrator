@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum OrchestratorCommandEventType {
     STOCK_RESERVE("stock-reserve"),
+    STOCK_RELEASE("stock-release"),
     PAYMENT_APPROVE("payment-approve"),
     ORDER_PREPARE_CONFIRMED("order-prepare-confirmed"),
     PAYMENT_CANCEL("payment-cancel"),
