@@ -29,6 +29,7 @@ public class HandleOrderPrepareService implements HandleOrderPrepareUseCase {
         log.info("[Orchestrator] order.prepare 처리. orderId={}", orderId);
         List<StockReserveCommand.ItemPayload> commandItems = items == null ? List.of() : items.stream()
                 .map(i -> StockReserveCommand.ItemPayload.builder()
+                        .orderLineId(i.orderLineId())
                         .productId(i.productId())
                         .quantity(i.quantity())
                         .unitPrice(i.unitPrice())

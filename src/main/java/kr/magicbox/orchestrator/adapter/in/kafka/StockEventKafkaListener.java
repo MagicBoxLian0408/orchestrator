@@ -27,7 +27,7 @@ public class StockEventKafkaListener {
         log.info("[Inbox] stock.reserve.succeeded 이벤트 수신. eventId={}", consumerRecord.key());
         StockReserveSucceededEvent event = consumerRecord.value();
         handleStockReserveSucceededUseCase.handleStockReserveSucceeded(
-                event.orderId(), event.customerId(), event.totalAmount());
+                event.orderId(), event.customerId(), event.totalAmount(), event.items());
     }
 
     @Idempotent
