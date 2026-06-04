@@ -7,7 +7,6 @@ import java.time.Instant;
 
 @Builder
 public record PaymentSucceededEvent(
-        @JsonProperty("event_id") Long eventId,
         @JsonProperty("payment_id") Long paymentId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
