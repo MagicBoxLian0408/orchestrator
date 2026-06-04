@@ -35,7 +35,6 @@ public class HandleOrderPrepareService implements HandleOrderPrepareUseCase {
                         .build())
                 .toList();
         orchestratorOutboxPort.save(StockReserveCommand.builder()
-                .eventId(orderId)
                 .orderId(orderId)
                 .customerId(customerId)
                 .totalAmount(totalAmount)

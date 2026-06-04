@@ -26,7 +26,6 @@ public class HandlePaymentSucceededService implements HandlePaymentSucceededUseC
     public void handlePaymentSucceeded(Long orderId, Long customerId) {
         log.info("[Orchestrator] payment.succeeded 처리. orderId={}", orderId);
         orchestratorOutboxPort.save(OrderPrepareConfirmedCommand.builder()
-                .eventId(orderId)
                 .orderId(orderId)
                 .occurredAt(Instant.now())
                 .build());

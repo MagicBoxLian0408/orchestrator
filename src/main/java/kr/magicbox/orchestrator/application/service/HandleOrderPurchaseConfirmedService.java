@@ -30,13 +30,11 @@ public class HandleOrderPurchaseConfirmedService implements HandleOrderPurchaseC
         log.info("[Orchestrator] order.purchase_confirmed 처리. orderId={}, orderLineId={}", orderId, orderLineId);
         Instant now = Instant.now();
         orchestratorOutboxPort.save(SettlementReadyCommand.builder()
-                .eventId(orderLineId)
                 .orderId(orderId)
                 .orderLineId(orderLineId)
                 .occurredAt(now)
                 .build());
         orchestratorOutboxPort.save(SettlementSettleCommand.builder()
-                .eventId(orderLineId)
                 .orderId(orderId)
                 .orderLineId(orderLineId)
                 .sellerId(sellerId)
