@@ -8,8 +8,10 @@ import kr.magicbox.orchestrator.application.port.in.HandleStockReserveSucceededU
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import kr.magicbox.orchestrator.global.exception.BusinessException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -21,7 +23,7 @@ public class StockEventKafkaListener {
     private final HandleStockReserveFailedUseCase handleStockReserveFailedUseCase;
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.stock-reserve-succeeded", groupId = "orchestrator-service")
     public void handleStockReserveSucceeded(ConsumerRecord<String, StockReserveSucceededEvent> consumerRecord) {
         log.info("[Inbox] stock.reserve.succeeded 이벤트 수신. key={}", consumerRecord.key());
@@ -31,7 +33,7 @@ public class StockEventKafkaListener {
     }
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.stock-reserve-failed", groupId = "orchestrator-service")
     public void handleStockReserveFailed(ConsumerRecord<String, StockReserveFailedEvent> consumerRecord) {
         log.info("[Inbox] stock.reserve.failed 이벤트 수신. key={}", consumerRecord.key());

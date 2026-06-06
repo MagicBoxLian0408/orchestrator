@@ -6,8 +6,10 @@ import kr.magicbox.orchestrator.application.port.in.HandleDeliveryCompletedUseCa
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import kr.magicbox.orchestrator.global.exception.BusinessException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -18,7 +20,7 @@ public class DeliveryEventKafkaListener {
     private final HandleDeliveryCompletedUseCase handleDeliveryCompletedUseCase;
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.delivery-completed", groupId = "orchestrator-service")
     public void handleDeliveryCompleted(ConsumerRecord<String, DeliveryCompletedEvent> consumerRecord) {
         log.info("[Inbox] delivery.completed 이벤트 수신. key={}", consumerRecord.key());

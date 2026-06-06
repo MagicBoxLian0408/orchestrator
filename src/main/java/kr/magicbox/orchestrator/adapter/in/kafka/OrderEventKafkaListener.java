@@ -6,8 +6,10 @@ import kr.magicbox.orchestrator.application.port.in.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import kr.magicbox.orchestrator.global.exception.BusinessException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -22,7 +24,7 @@ public class OrderEventKafkaListener {
     private final HandleOrderAutoConfirmedUseCase handleOrderAutoConfirmedUseCase;
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.order-prepare", groupId = "orchestrator-service")
     public void handleOrderPrepare(ConsumerRecord<String, OrderPrepareEvent> consumerRecord) {
         log.info("[Inbox] order.prepare 이벤트 수신. key={}", consumerRecord.key());
@@ -32,7 +34,7 @@ public class OrderEventKafkaListener {
     }
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.order-confirmed", groupId = "orchestrator-service")
     public void handleOrderConfirmed(ConsumerRecord<String, OrderConfirmedEvent> consumerRecord) {
         log.info("[Inbox] order.confirmed 이벤트 수신. key={}", consumerRecord.key());
@@ -42,7 +44,7 @@ public class OrderEventKafkaListener {
     }
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.order-cancel", groupId = "orchestrator-service")
     public void handleOrderCancel(ConsumerRecord<String, OrderCancelEvent> consumerRecord) {
         log.info("[Inbox] order.cancel 이벤트 수신. key={}", consumerRecord.key());
@@ -51,7 +53,7 @@ public class OrderEventKafkaListener {
     }
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.order-purchase-confirmed", groupId = "orchestrator-service")
     public void handleOrderPurchaseConfirmed(ConsumerRecord<String, OrderPurchaseConfirmedEvent> consumerRecord) {
         log.info("[Inbox] order.purchase_confirmed 이벤트 수신. key={}", consumerRecord.key());
@@ -61,7 +63,7 @@ public class OrderEventKafkaListener {
     }
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.order-auto-confirmed", groupId = "orchestrator-service")
     public void handleOrderAutoConfirmed(ConsumerRecord<String, OrderAutoConfirmedEvent> consumerRecord) {
         log.info("[Inbox] order.auto_confirmed 이벤트 수신. key={}", consumerRecord.key());
