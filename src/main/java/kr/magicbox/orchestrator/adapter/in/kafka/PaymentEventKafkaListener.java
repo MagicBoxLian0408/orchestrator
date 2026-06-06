@@ -30,7 +30,7 @@ public class PaymentEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.payment-succeeded", groupId = "orchestrator-service")
     public void handlePaymentSucceeded(ConsumerRecord<String, PaymentSucceededEvent> consumerRecord) {
-        log.info("[Inbox] payment.succeeded 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] payment.succeeded 이벤트 수신. key={}", consumerRecord.key());
         PaymentSucceededEvent event = consumerRecord.value();
         handlePaymentSucceededUseCase.handlePaymentSucceeded(
                 event.orderId(), event.customerId());
@@ -40,7 +40,7 @@ public class PaymentEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.payment-failed", groupId = "orchestrator-service")
     public void handlePaymentFailed(ConsumerRecord<String, PaymentFailedEvent> consumerRecord) {
-        log.info("[Inbox] payment.failed 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] payment.failed 이벤트 수신. key={}", consumerRecord.key());
         handlePaymentFailedUseCase.handlePaymentFailed(consumerRecord.value().orderId());
     }
 
@@ -48,7 +48,7 @@ public class PaymentEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.payment-cancel-succeeded", groupId = "orchestrator-service")
     public void handlePaymentCancelSucceeded(ConsumerRecord<String, PaymentCancelSucceededEvent> consumerRecord) {
-        log.info("[Inbox] payment.cancel.succeeded 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] payment.cancel.succeeded 이벤트 수신. key={}", consumerRecord.key());
         handlePaymentCancelSucceededUseCase.handlePaymentCancelSucceeded(consumerRecord.value().orderId());
     }
 
@@ -56,7 +56,7 @@ public class PaymentEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.payment-cancel-failed", groupId = "orchestrator-service")
     public void handlePaymentCancelFailed(ConsumerRecord<String, PaymentCancelFailedEvent> consumerRecord) {
-        log.info("[Inbox] payment.cancel.failed 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] payment.cancel.failed 이벤트 수신. key={}", consumerRecord.key());
         PaymentCancelFailedEvent event = consumerRecord.value();
         handlePaymentCancelFailedUseCase.handlePaymentCancelFailed(event.orderId(), event.reason());
     }

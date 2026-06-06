@@ -24,7 +24,7 @@ public class StockEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.stock-reserve-succeeded", groupId = "orchestrator-service")
     public void handleStockReserveSucceeded(ConsumerRecord<String, StockReserveSucceededEvent> consumerRecord) {
-        log.info("[Inbox] stock.reserve.succeeded 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] stock.reserve.succeeded 이벤트 수신. key={}", consumerRecord.key());
         StockReserveSucceededEvent event = consumerRecord.value();
         handleStockReserveSucceededUseCase.handleStockReserveSucceeded(
                 event.orderId(), event.customerId(), event.totalAmount());
@@ -34,7 +34,7 @@ public class StockEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.stock-reserve-failed", groupId = "orchestrator-service")
     public void handleStockReserveFailed(ConsumerRecord<String, StockReserveFailedEvent> consumerRecord) {
-        log.info("[Inbox] stock.reserve.failed 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] stock.reserve.failed 이벤트 수신. key={}", consumerRecord.key());
         handleStockReserveFailedUseCase.handleStockReserveFailed(consumerRecord.value().orderId());
     }
 }

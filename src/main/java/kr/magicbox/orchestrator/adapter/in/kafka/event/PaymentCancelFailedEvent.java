@@ -7,7 +7,6 @@ import java.time.Instant;
 
 @Builder
 public record PaymentCancelFailedEvent(
-        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("reason") String reason,
         @JsonProperty("occurred_at") Instant occurredAt
