@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrchestratorInboxRepository extends JpaRepository<OrchestratorInboxEntity, Long> {
 
-    boolean existsByKafkaKey(String kafkaKey);
+    boolean existsByKey(String key);
 }
