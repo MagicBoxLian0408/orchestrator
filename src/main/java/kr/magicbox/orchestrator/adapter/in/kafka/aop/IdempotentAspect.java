@@ -31,16 +31,15 @@ public class IdempotentAspect {
     @Around("@annotation(kr.magicbox.orchestrator.adapter.in.kafka.annotation.Idempotent)")
     public Object around(ProceedingJoinPoint pjp) {
         ConsumerRecord<String, ?> consumerRecord = extractRecord(pjp);
-        // Debezium outbox event router가 outbox row id를 Kafka 메시지 key로 전송
-        Long eventId = Long.parseLong(consumerRecord.key());
+        String key = consumerRecord.key();
         InboxEvent event = (InboxEvent) consumerRecord.value();
         Instant occurredAt = event.occurredAt();
 
         if (isTooOld(occurredAt)) {
-            log.warn("[Inbox] 만료된 메시지 DEAD_LETTERED 처리. eventId={}, occurredAt={}", eventId, occurredAt);
+            log.warn("[Inbox] 만료된 메시지 DEAD_LETTERED 처리. key={}, occurredAt={}", key, occurredAt);
             transactionTemplate.executeWithoutResult(status ->
                 orchestratorInboxRepository.save(OrchestratorInboxEntity.builder()
-                        .eventId(eventId)
+                        .key(key)
                         .topic(consumerRecord.topic())
                         .partition(consumerRecord.partition())
                         .offset(consumerRecord.offset())
@@ -52,12 +51,12 @@ public class IdempotentAspect {
         }
 
         return transactionTemplate.execute(status -> {
-            if (orchestratorInboxRepository.existsByEventId(eventId)) {
-                log.warn("[Inbox] 중복 메시지 폐기. eventId={}", eventId);
+            if (orchestratorInboxRepository.existsByKey(key)) {
+                log.warn("[Inbox] 중복 메시지 폐기. key={}", key);
                 return null;
             }
             OrchestratorInboxEntity inbox = orchestratorInboxRepository.save(OrchestratorInboxEntity.builder()
-                    .eventId(eventId)
+                    .key(key)
                     .topic(consumerRecord.topic())
                     .partition(consumerRecord.partition())
                     .offset(consumerRecord.offset())
