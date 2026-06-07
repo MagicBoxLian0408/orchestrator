@@ -36,7 +36,3 @@ spring:
 inbox:
   max-event-age-minutes: 60
 
-security:
-  trusted:
-    ips:
-      - ${TRUSTED_IP_GATEWAY}
