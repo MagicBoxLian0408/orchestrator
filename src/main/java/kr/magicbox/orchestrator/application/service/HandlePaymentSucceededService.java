@@ -13,6 +13,7 @@ import java.time.Instant;
 /**
  * payment.succeeded 이벤트 처리
  * 플로우: payment.succeeded 수신 → order-prepare-confirmed 커맨드 발행 (Order: PAYMENT_COMPLETED → PREPARING)
+ * Debezium이 outbox.event.order-prepare-confirmed 토픽으로 라우팅 → Order 서비스 리스너 소비
  */
 @Slf4j
 @Service
