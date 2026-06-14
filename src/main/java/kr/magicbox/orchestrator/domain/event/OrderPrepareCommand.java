@@ -19,6 +19,6 @@ public record OrderPrepareCommand(
 
     @Override
     public OrchestratorCommandEventType eventType() {
-        return OrchestratorCommandEventType.ORDER_PREPARE_CONFIRMED;
+        return OrchestratorCommandEventType.ORDER_PREPARE;
     }
 }
