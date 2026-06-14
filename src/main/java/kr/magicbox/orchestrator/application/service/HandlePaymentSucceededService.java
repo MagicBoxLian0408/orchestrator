@@ -2,7 +2,7 @@ package kr.magicbox.orchestrator.application.service;
 
 import kr.magicbox.orchestrator.application.port.in.HandlePaymentSucceededUseCase;
 import kr.magicbox.orchestrator.application.port.out.OrchestratorOutboxPort;
-import kr.magicbox.orchestrator.domain.event.OrderPrepareConfirmedCommand;
+import kr.magicbox.orchestrator.domain.event.OrderPrepareCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class HandlePaymentSucceededService implements HandlePaymentSucceededUseC
     @Transactional
     public void handlePaymentSucceeded(Long orderId, Long customerId) {
         log.info("[Orchestrator] payment.succeeded 처리. orderId={}", orderId);
-        orchestratorOutboxPort.save(OrderPrepareConfirmedCommand.builder()
+        orchestratorOutboxPort.save(OrderPrepareCommand.builder()
                 .orderId(orderId)
                 .occurredAt(Instant.now())
                 .build());
