@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.time.Instant;
 
 @Builder
-public record OrderPrepareCommand(
+public record OrderPrepareConfirmedCommand(
         @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("occurred_at") Instant occurredAt
@@ -19,6 +19,6 @@ public record OrderPrepareCommand(
 
     @Override
     public OrchestratorCommandEventType eventType() {
-        return OrchestratorCommandEventType.ORDER_PREPARE;
+        return OrchestratorCommandEventType.ORDER_PREPARE_CONFIRMED;
     }
 }
