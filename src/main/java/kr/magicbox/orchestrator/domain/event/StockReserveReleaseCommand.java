@@ -1,4 +1,4 @@
-package kr.magicbox.orchestrator.adapter.in.kafka.event;
+package kr.magicbox.orchestrator.domain.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -7,21 +7,30 @@ import java.time.Instant;
 import java.util.List;
 
 @Builder
-public record OrderPrepareEvent(
+public record StockReserveReleaseCommand(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
-        @JsonProperty("seller_id") Long sellerId,
         @JsonProperty("total_amount") Long totalAmount,
         @JsonProperty("items") List<ItemPayload> items,
         @JsonProperty("occurred_at") Instant occurredAt
-) implements InboxEvent {
+) implements OrchestratorCommandEvent {
 
     @Builder
     public record ItemPayload(
             @JsonProperty("order_line_id") Long orderLineId,
             @JsonProperty("product_id") Long productId,
             @JsonProperty("quantity") int quantity,
-            @JsonProperty("unit_price") long unitPrice,
-            @JsonProperty("product_type") String productType
+            @JsonProperty("unit_price") long unitPrice
     ) {}
+
+    @Override
+    public String key() {
+        return orderId.toString();
+    }
+
+    @Override
+    public OrchestratorCommandEventType eventType() {
+        return OrchestratorCommandEventType.STOCK_RESERVE_RELEASE;
+    }
 }

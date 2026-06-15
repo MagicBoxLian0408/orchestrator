@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Builder
-public record StockReserveCommand(
+public record StockReserveGeneralGoodCommand(
         @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
@@ -18,6 +18,7 @@ public record StockReserveCommand(
 
     @Builder
     public record ItemPayload(
+            @JsonProperty("order_line_id") Long orderLineId,
             @JsonProperty("product_id") Long productId,
             @JsonProperty("quantity") int quantity,
             @JsonProperty("unit_price") long unitPrice
@@ -30,6 +31,6 @@ public record StockReserveCommand(
 
     @Override
     public OrchestratorCommandEventType eventType() {
-        return OrchestratorCommandEventType.STOCK_RESERVE;
+        return OrchestratorCommandEventType.STOCK_RESERVE_GENERAL_GOOD;
     }
 }
