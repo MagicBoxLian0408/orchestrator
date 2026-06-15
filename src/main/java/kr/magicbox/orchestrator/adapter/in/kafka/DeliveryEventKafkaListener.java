@@ -21,7 +21,7 @@ public class DeliveryEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.delivery-completed", groupId = "orchestrator-service")
     public void handleDeliveryCompleted(ConsumerRecord<String, DeliveryCompletedEvent> consumerRecord) {
-        log.info("[Inbox] delivery.completed 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] delivery.completed 이벤트 수신. key={}", consumerRecord.key());
         DeliveryCompletedEvent event = consumerRecord.value();
         handleDeliveryCompletedUseCase.handleDeliveryCompleted(event.orderId(), event.orderLineId());
     }

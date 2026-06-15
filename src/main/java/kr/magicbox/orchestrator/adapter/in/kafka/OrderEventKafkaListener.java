@@ -25,7 +25,7 @@ public class OrderEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.order-prepare", groupId = "orchestrator-service")
     public void handleOrderPrepare(ConsumerRecord<String, OrderPrepareEvent> consumerRecord) {
-        log.info("[Inbox] order.prepare 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] order.prepare 이벤트 수신. key={}", consumerRecord.key());
         OrderPrepareEvent event = consumerRecord.value();
         handleOrderPrepareUseCase.handleOrderPrepare(
                 event.orderId(), event.customerId(), event.sellerId(), event.totalAmount(), event.items());
@@ -35,7 +35,7 @@ public class OrderEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.order-confirmed", groupId = "orchestrator-service")
     public void handleOrderConfirmed(ConsumerRecord<String, OrderConfirmedEvent> consumerRecord) {
-        log.info("[Inbox] order.confirmed 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] order.confirmed 이벤트 수신. key={}", consumerRecord.key());
         OrderConfirmedEvent event = consumerRecord.value();
         handleOrderConfirmedUseCase.handleOrderConfirmed(
                 event.orderId(), event.customerId(), event.sellerId(), event.totalAmount());
@@ -45,7 +45,7 @@ public class OrderEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.order-cancel", groupId = "orchestrator-service")
     public void handleOrderCancel(ConsumerRecord<String, OrderCancelEvent> consumerRecord) {
-        log.info("[Inbox] order.cancel 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] order.cancel 이벤트 수신. key={}", consumerRecord.key());
         OrderCancelEvent event = consumerRecord.value();
         handleOrderCancelUseCase.handleOrderCancel(event.orderId(), event.customerId());
     }
@@ -54,7 +54,7 @@ public class OrderEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.order-purchase-confirmed", groupId = "orchestrator-service")
     public void handleOrderPurchaseConfirmed(ConsumerRecord<String, OrderPurchaseConfirmedEvent> consumerRecord) {
-        log.info("[Inbox] order.purchase_confirmed 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] order.purchase_confirmed 이벤트 수신. key={}", consumerRecord.key());
         OrderPurchaseConfirmedEvent event = consumerRecord.value();
         handleOrderPurchaseConfirmedUseCase.handleOrderPurchaseConfirmed(
                 event.orderId(), event.orderLineId(), event.sellerId(), event.grossAmount());
@@ -64,7 +64,7 @@ public class OrderEventKafkaListener {
     @RetryableTopic
     @KafkaListener(topics = "outbox.event.order-auto-confirmed", groupId = "orchestrator-service")
     public void handleOrderAutoConfirmed(ConsumerRecord<String, OrderAutoConfirmedEvent> consumerRecord) {
-        log.info("[Inbox] order.auto_confirmed 이벤트 수신. eventId={}", consumerRecord.key());
+        log.info("[Inbox] order.auto_confirmed 이벤트 수신. key={}", consumerRecord.key());
         OrderAutoConfirmedEvent event = consumerRecord.value();
         handleOrderAutoConfirmedUseCase.handleOrderAutoConfirmed(
                 event.orderId(), event.orderLineId(), event.sellerId(), event.grossAmount());
