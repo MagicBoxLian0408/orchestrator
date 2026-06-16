@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * order.prepare 이벤트 처리
- * 플로우: order.prepare 수신 → product_type 기준으로 stock-reserve.release 또는 stock-reserve.general-good 커맨드 발행
+ * 플로우: order.prepare 수신 → productType에 따라 stock-reserve-release 또는 stock-reserve.general-good 커맨드 발행
  */
 @Slf4j
 @Service
@@ -29,20 +29,17 @@ public class HandleOrderPrepareService implements HandleOrderPrepareUseCase {
     public void handleOrderPrepare(Long orderId, Long customerId, Long sellerId, Long totalAmount, List<OrderPrepareEvent.ItemPayload> items) {
         log.info("[Orchestrator] order.prepare 처리. orderId={}", orderId);
         List<OrderPrepareEvent.ItemPayload> safeItems = items == null ? List.of() : items;
+        String productType = safeItems.isEmpty() ? null : safeItems.get(0).productType();
 
-        boolean isRelease = safeItems.stream().anyMatch(i -> "RELEASE".equals(i.productType()));
-
-        if (isRelease) {
-            List<StockReserveReleaseCommand.ItemPayload> commandItems = safeItems.stream()
-                    .map(i -> StockReserveReleaseCommand.ItemPayload.builder()
-                            .orderLineId(i.orderLineId())
+        if ("GENERAL_GOODS".equals(productType)) {
+            List<StockReserveGeneralGoodCommand.ItemPayload> commandItems = safeItems.stream()
+                    .map(i -> StockReserveGeneralGoodCommand.ItemPayload.builder()
                             .productId(i.productId())
                             .quantity(i.quantity())
                             .unitPrice(i.unitPrice())
                             .build())
                     .toList();
-            orchestratorOutboxPort.save(StockReserveReleaseCommand.builder()
-                    .eventId(orderId)
+            orchestratorOutboxPort.save(StockReserveGeneralGoodCommand.builder()
                     .orderId(orderId)
                     .customerId(customerId)
                     .totalAmount(totalAmount)
@@ -50,16 +47,14 @@ public class HandleOrderPrepareService implements HandleOrderPrepareUseCase {
                     .occurredAt(Instant.now())
                     .build());
         } else {
-            List<StockReserveGeneralGoodCommand.ItemPayload> commandItems = safeItems.stream()
-                    .map(i -> StockReserveGeneralGoodCommand.ItemPayload.builder()
-                            .orderLineId(i.orderLineId())
+            List<StockReserveReleaseCommand.ItemPayload> commandItems = safeItems.stream()
+                    .map(i -> StockReserveReleaseCommand.ItemPayload.builder()
                             .productId(i.productId())
                             .quantity(i.quantity())
                             .unitPrice(i.unitPrice())
                             .build())
                     .toList();
-            orchestratorOutboxPort.save(StockReserveGeneralGoodCommand.builder()
-                    .eventId(orderId)
+            orchestratorOutboxPort.save(StockReserveReleaseCommand.builder()
                     .orderId(orderId)
                     .customerId(customerId)
                     .totalAmount(totalAmount)
