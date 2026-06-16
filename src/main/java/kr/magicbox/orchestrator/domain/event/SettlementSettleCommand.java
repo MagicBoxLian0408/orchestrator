@@ -11,7 +11,7 @@ public record SettlementSettleCommand(
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("order_line_id") Long orderLineId,
         @JsonProperty("seller_id") Long sellerId,
-        @JsonProperty("gross_amount") long grossAmount,
+        @JsonProperty("gross_amount") Long grossAmount,
         @JsonProperty("occurred_at") Instant occurredAt
 ) implements OrchestratorCommandEvent {
 

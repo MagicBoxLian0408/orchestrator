@@ -20,7 +20,7 @@ public record StockReleaseCommand(
     @Builder
     public record ItemPayload(
             @JsonProperty("product_id") Long productId,
-            @JsonProperty("quantity") int quantity
+            @JsonProperty("quantity") Integer quantity
     ) {}
 
     @Override
