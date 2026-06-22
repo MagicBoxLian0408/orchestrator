@@ -5,7 +5,6 @@ import kr.magicbox.orchestrator.adapter.out.persistence.entity.OrchestratorOutbo
 import kr.magicbox.orchestrator.adapter.out.persistence.repository.OrchestratorOutboxRepository;
 import kr.magicbox.orchestrator.application.port.out.OrchestratorOutboxPort;
 import kr.magicbox.orchestrator.domain.event.OrchestratorCommandEvent;
-import kr.magicbox.orchestrator.domain.event.OrderLineIdAware;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +17,9 @@ public class OrchestratorOutboxAdapter implements OrchestratorOutboxPort {
 
     @Override
     public void save(OrchestratorCommandEvent event) {
-        Long orderLineId = event instanceof OrderLineIdAware e ? e.orderLineId() : null;
         orchestratorOutboxRepository.save(OrchestratorOutboxEntity.builder()
                 .eventType(event.eventType().getTopicSuffix())
                 .payload(objectMapper.writeValueAsString(event))
-                .orderId(event.orderId())
-                .orderLineId(orderLineId)
                 .build());
     }
 }
