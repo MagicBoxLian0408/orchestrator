@@ -20,9 +20,17 @@ public class OrchestratorOutboxEntity extends BaseEntity {
     @Column(columnDefinition = "JSON", nullable = false)
     private String payload;
 
+    @Column(name = "order_id")
+    private Long orderId;
+
+    @Column(name = "order_line_id")
+    private Long orderLineId;
+
     @Builder
-    public OrchestratorOutboxEntity(String eventType, String payload) {
+    public OrchestratorOutboxEntity(String eventType, String payload, Long orderId, Long orderLineId) {
         this.eventType = eventType;
         this.payload = payload;
+        this.orderId = orderId;
+        this.orderLineId = orderLineId;
     }
 }

@@ -13,7 +13,7 @@ public record SettlementSettleCommand(
         @JsonProperty("seller_id") Long sellerId,
         @JsonProperty("gross_amount") Long grossAmount,
         @JsonProperty("occurred_at") Instant occurredAt
-) implements OrchestratorCommandEvent {
+) implements OrchestratorCommandEvent, OrderLineIdAware {
 
     @Override
     public String key() {
