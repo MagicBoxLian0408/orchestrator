@@ -31,6 +31,7 @@ spring:
           stock-reserve-failed:kr.magicbox.orchestrator.adapter.in.kafka.event.StockReserveFailedEvent,
           stock-reserve-general-goods-succeeded:kr.magicbox.orchestrator.adapter.in.kafka.event.GeneralGoodStockReserveSucceededEvent,
           stock-reserve-general-goods-failed:kr.magicbox.orchestrator.adapter.in.kafka.event.GeneralGoodStockReserveFailedEvent
+        spring.json.use.type.headers: false
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
