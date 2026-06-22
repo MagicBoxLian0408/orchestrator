@@ -11,7 +11,7 @@ public record SettlementReadyCommand(
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("order_line_id") Long orderLineId,
         @JsonProperty("occurred_at") Instant occurredAt
-) implements OrchestratorCommandEvent {
+) implements OrchestratorCommandEvent, OrderLineIdAware {
 
     @Override
     public String key() {
