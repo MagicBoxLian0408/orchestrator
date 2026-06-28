@@ -6,11 +6,9 @@ import lombok.Builder;
 import java.time.Instant;
 
 @Builder
-public record OrderAutoConfirmedEvent(
+public record GeneralGoodStockReserveSucceededEvent(
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
-        @JsonProperty("order_line_id") Long orderLineId,
-        @JsonProperty("seller_id") Long sellerId,
-        @JsonProperty("gross_amount") Long grossAmount,
+        @JsonProperty("total_amount") Long totalAmount,
         @JsonProperty("occurred_at") Instant occurredAt
 ) implements InboxEvent {}

@@ -18,10 +18,9 @@ public record OrderPrepareEvent(
 
     @Builder
     public record ItemPayload(
-            @JsonProperty("order_line_id") Long orderLineId,
             @JsonProperty("product_id") Long productId,
-            @JsonProperty("quantity") int quantity,
-            @JsonProperty("unit_price") long unitPrice,
+            @JsonProperty("quantity") Integer quantity,
+            @JsonProperty("unit_price") Long unitPrice,
             @JsonProperty("product_type") String productType
     ) {}
 }

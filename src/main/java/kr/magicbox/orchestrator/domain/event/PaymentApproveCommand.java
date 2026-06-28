@@ -10,7 +10,7 @@ public record PaymentApproveCommand(
         @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
-        @JsonProperty("total_amount") long amount,
+        @JsonProperty("total_amount") Long amount,
         @JsonProperty("occurred_at") Instant occurredAt
 ) implements OrchestratorCommandEvent {
 

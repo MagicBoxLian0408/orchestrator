@@ -1,6 +1,8 @@
 package kr.magicbox.orchestrator.adapter.in.kafka;
 
 import kr.magicbox.orchestrator.adapter.in.kafka.annotation.Idempotent;
+import kr.magicbox.orchestrator.adapter.in.kafka.event.GeneralGoodStockReserveFailedEvent;
+import kr.magicbox.orchestrator.adapter.in.kafka.event.GeneralGoodStockReserveSucceededEvent;
 import kr.magicbox.orchestrator.adapter.in.kafka.event.StockReserveFailedEvent;
 import kr.magicbox.orchestrator.adapter.in.kafka.event.StockReserveSucceededEvent;
 import kr.magicbox.orchestrator.application.port.in.HandleStockReserveFailedUseCase;
@@ -35,6 +37,24 @@ public class StockEventKafkaListener {
     @KafkaListener(topics = "outbox.event.stock-reserve-failed", groupId = "orchestrator-service")
     public void handleStockReserveFailed(ConsumerRecord<String, StockReserveFailedEvent> consumerRecord) {
         log.info("[Inbox] stock.reserve.failed 이벤트 수신. key={}", consumerRecord.key());
+        handleStockReserveFailedUseCase.handleStockReserveFailed(consumerRecord.value().orderId());
+    }
+
+    @Idempotent
+    @RetryableTopic
+    @KafkaListener(topics = "outbox.event.stock-reserve-general-goods-succeeded", groupId = "orchestrator-service")
+    public void handleGeneralGoodStockReserveSucceeded(ConsumerRecord<String, GeneralGoodStockReserveSucceededEvent> consumerRecord) {
+        log.info("[Inbox] stock-reserve-general-goods-succeeded 이벤트 수신. key={}", consumerRecord.key());
+        GeneralGoodStockReserveSucceededEvent event = consumerRecord.value();
+        handleStockReserveSucceededUseCase.handleStockReserveSucceeded(
+                event.orderId(), event.customerId(), event.totalAmount());
+    }
+
+    @Idempotent
+    @RetryableTopic
+    @KafkaListener(topics = "outbox.event.stock-reserve-general-goods-failed", groupId = "orchestrator-service")
+    public void handleGeneralGoodStockReserveFailed(ConsumerRecord<String, GeneralGoodStockReserveFailedEvent> consumerRecord) {
+        log.info("[Inbox] stock-reserve-general-goods-failed 이벤트 수신. key={}", consumerRecord.key());
         handleStockReserveFailedUseCase.handleStockReserveFailed(consumerRecord.value().orderId());
     }
 }
