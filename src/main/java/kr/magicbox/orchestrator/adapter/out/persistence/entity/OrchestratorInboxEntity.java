@@ -14,8 +14,8 @@ import java.time.Instant;
 @Table(name = "orchestrator_inbox")
 public class OrchestratorInboxEntity extends BaseEntity {
 
-    @Column(name = "event_key", nullable = false, unique = true)
-    private String eventKey;
+    @Column(nullable = false, unique = true)
+    private String key;
 
     @Column(nullable = false)
     private String topic;
@@ -34,8 +34,8 @@ public class OrchestratorInboxEntity extends BaseEntity {
     private Instant occurredAt;
 
     @Builder
-    public OrchestratorInboxEntity(String eventKey, String topic, Integer partition, Long offset, OrchestratorInboxStatus status, Instant occurredAt) {
-        this.eventKey = eventKey;
+    public OrchestratorInboxEntity(String key, String topic, Integer partition, Long offset, OrchestratorInboxStatus status, Instant occurredAt) {
+        this.key = key;
         this.topic = topic;
         this.partition = partition;
         this.offset = offset;
