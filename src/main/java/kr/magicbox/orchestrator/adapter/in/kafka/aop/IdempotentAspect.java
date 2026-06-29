@@ -39,7 +39,7 @@ public class IdempotentAspect {
             log.warn("[Inbox] 만료된 메시지 DEAD_LETTERED 처리. key={}, occurredAt={}", key, occurredAt);
             transactionTemplate.executeWithoutResult(status ->
                 orchestratorInboxRepository.save(OrchestratorInboxEntity.builder()
-                        .eventKey(key)
+                        .key(key)
                         .topic(consumerRecord.topic())
                         .partition(consumerRecord.partition())
                         .offset(consumerRecord.offset())
@@ -51,16 +51,16 @@ public class IdempotentAspect {
         }
 
         return transactionTemplate.execute(status -> {
-            if (orchestratorInboxRepository.existsByEventKey(key)) {
+            if (orchestratorInboxRepository.existsByKey(key)) {
                 log.warn("[Inbox] 중복 메시지 폐기. key={}", key);
                 return null;
             }
-            OrchestratorInboxEntity inbox = orchestratorInboxRepository.save(OrchestratorInboxEntity.builder()
-                    .eventKey(key)
+            orchestratorInboxRepository.save(OrchestratorInboxEntity.builder()
+                    .key(key)
                     .topic(consumerRecord.topic())
                     .partition(consumerRecord.partition())
                     .offset(consumerRecord.offset())
-                    .status(OrchestratorInboxStatus.PENDING)
+                    .status(OrchestratorInboxStatus.PROCESSED)
                     .occurredAt(occurredAt)
                     .build());
             try {
@@ -69,7 +69,6 @@ public class IdempotentAspect {
                 status.setRollbackOnly();
                 throw new RuntimeException(e);
             }
-            inbox.markProcessed();
             return null;
         });
     }

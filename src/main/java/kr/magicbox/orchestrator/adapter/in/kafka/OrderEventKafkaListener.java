@@ -2,10 +2,13 @@ package kr.magicbox.orchestrator.adapter.in.kafka;
 
 import kr.magicbox.orchestrator.adapter.in.kafka.annotation.Idempotent;
 import kr.magicbox.orchestrator.adapter.in.kafka.event.*;
+import kr.magicbox.orchestrator.adapter.out.persistence.entity.OrchestratorInboxEntity;
+import kr.magicbox.orchestrator.adapter.out.persistence.repository.OrchestratorInboxRepository;
 import kr.magicbox.orchestrator.application.port.in.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.stereotype.Component;
@@ -20,6 +23,7 @@ public class OrderEventKafkaListener {
     private final HandleOrderCancelUseCase handleOrderCancelUseCase;
     private final HandleOrderPurchaseConfirmedUseCase handleOrderPurchaseConfirmedUseCase;
     private final HandleOrderAutoConfirmedUseCase handleOrderAutoConfirmedUseCase;
+    private final OrchestratorInboxRepository orchestratorInboxRepository;
 
     @Idempotent
     @RetryableTopic
@@ -68,5 +72,12 @@ public class OrderEventKafkaListener {
         OrderAutoConfirmedEvent event = consumerRecord.value();
         handleOrderAutoConfirmedUseCase.handleOrderAutoConfirmed(
                 event.orderId(), event.orderLineId(), event.sellerId(), event.grossAmount());
+    }
+
+    @DltHandler
+    public void handleDlt(ConsumerRecord<String, ?> consumerRecord) {
+        log.error("[Inbox] DLT 전환. topic={}, partition={}, offset={}", consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset());
+        orchestratorInboxRepository.findByTopicAndPartitionAndOffset(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset())
+                .ifPresent(OrchestratorInboxEntity::markDeadLettered);
     }
 }
